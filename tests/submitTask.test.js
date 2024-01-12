@@ -1,7 +1,6 @@
-// submitTask.test.js
 const axios = require("axios");
 const submitTask = require("../utils/submitTask.js");
-require("dotenv").config(); // Load environment variables from .env file
+require("dotenv").config(); 
 
 jest.mock("axios");
 
@@ -13,17 +12,18 @@ describe("submitTask", () => {
         // Mocking the axios.post method to return a successful response
         axios.post.mockResolvedValue({ data: "Task submitted successfully" });
 
-        // Performing the submitTask function
+        const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
+
         await submitTask(id, result);
 
-        // Expecting axios.post to have been called with the correct arguments
         expect(axios.post).toHaveBeenCalledWith(
-            "https://interview.adpeai.com/api/v1/submit-task",
+            process.env.API_GETTASK_URL || "https://interview.adpeai.com/api/v1/submit-task",
             { id: id, result: result }
         );
 
-        // Expecting a console log indicating success
-        expect(console.log).toHaveBeenCalledWith("Task submitted successfully:", "Task submitted successfully");
+        expect(consoleLogMock).toHaveBeenCalledWith("Task submitted successfully:", "Task submitted successfully");
+
+        consoleLogMock.mockRestore();
     });
 
     it("should handle errors during submission", async () => {
@@ -31,18 +31,18 @@ describe("submitTask", () => {
         const result = 42;
 
         // Mocking the axios.post method to return an error
-        axios.post.mockRejectedValue(new Error("Submission error"));
+        const errorMessage = "Submission error";
+        axios.post.mockRejectedValue(new Error(errorMessage));
 
-        // Performing the submitTask function
+        // Mocking console.error to prevent it from throwing an error in the test
+        console.error = jest.fn();
+
         await submitTask(id, result);
 
-        // Expecting axios.post to have been called with the correct arguments
         expect(axios.post).toHaveBeenCalledWith(
-            "https://interview.adpeai.com/api/v1/submit-task",
+            process.env.API_GETTASK_URL || "https://interview.adpeai.com/api/v1/submit-task",
             { id: id, result: result }
         );
-
-        // Expecting a console error indicating the error message
-        expect(console.error).toHaveBeenCalledWith("Error submitting task:", "Submission error");
+        expect(console.error).toHaveBeenCalledWith("Error submitting task:", errorMessage);
     });
 });
