@@ -9,15 +9,21 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:e2e": "npx cypress open",
+    "test:e2e_headless": "cypress run --spec cypress/e2e/e2e.cy.js",
+    "test:e2e_startserver": "npm-run-all -p start test:e2e",
+    "test:watch": "jest --watchAll",
+    "stop:server": "npm explore child_process -c 'node utils/stop-server.js'"
   },
   "dependencies": {
     "axios": "^0.24.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
-    "jest": "29.7"
+    "jest": "29.7",
+    "npm-run-all": "^4.1.5"
   },
   "devDependencies": {
+    "cypress": "^13.6.2",
     "eslint-plugin-jest": "^27.6.3",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.0.2"

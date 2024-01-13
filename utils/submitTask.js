@@ -15,7 +15,7 @@ async function submitTask(id, result) {
         console.log("Task submitted successfully:", response.data);
     } catch (error) {
         console.error("Error submitting task:", error.message);
-  
+
         if (error.response) {
             // The request was made, but the server responded with an error status code
             console.error("Server responded with error status:", error.response.status);
@@ -28,7 +28,7 @@ async function submitTask(id, result) {
             console.error("Error setting up the request:", error.message);
         }
     }
-  
+
 }
 
 module.exports = submitTask;
